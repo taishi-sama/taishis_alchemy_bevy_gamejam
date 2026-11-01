@@ -18,10 +18,7 @@ opt-level = 1
 # This is used by trunk as it doesn't support custom profiles: https://github.com/trunk-rs/trunk/issues/605
 # xbuild also uses this profile for building android AABs because I couldn't find a configuration for it
 [profile.release]
-opt-level = "s"
-lto = true
-codegen-units = 1
-strip = true
+
 
 # Profile for distribution
 [profile.dist]
@@ -46,7 +43,10 @@ dev = [
 [dependencies]
 bevy = { version = "0.20.1", default-features = false, features = [
     "2d",
-    "ui",
+    "ui",    
+    "bevy_remote",
+    "picking",
+    "debug",
 ] }
 bevy_kira_audio = { version = "0.27.1" }
 bevy_asset_loader = { version = "0.28.1" }
@@ -58,8 +58,10 @@ winit = { version = "0.30", default-features = false }
 image = { version = "0.25", default-features = false }
 ## This greatly improves WGPU's performance due to its heavy use of trace! calls
 log = { version = "0.4", features = ["max_level_debug", "release_max_level_warn"] }
-avian2d = "0.8.0"
-vleue_navigator = "0.17.0"
+avian2d = {version = "0.8.0", features = ["default-collider"]}
+vleue_navigator = { version = "0.17.0", features = ["avian2d"]}
+bevy-inspector-egui = "0.38.0"
+bevy_egui = "0.43.1"
 
 # Required to make `rand`/`getrandom` work on wasm.
 # Backend is selected via `.cargo/config.toml` rustflags for the wasm32-unknown-unknown target.

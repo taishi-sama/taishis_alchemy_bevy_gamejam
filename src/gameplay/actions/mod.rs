@@ -3,7 +3,6 @@ use bevy::prelude::*;
 
 use crate::GameState;
 use crate::gameplay::actions::game_control::{GameControl, get_movement};
-use crate::gameplay::player::Player;
 
 mod game_control;
 
@@ -31,7 +30,6 @@ pub fn set_movement_actions(
     mut actions: ResMut<Actions>,
     keyboard_input: Res<ButtonInput<KeyCode>>,
     touch_input: Res<Touches>,
-    player: Query<&Transform, With<Player>>,
     camera: Query<(&Camera, &GlobalTransform), With<Camera2d>>,
 ) -> Result {
     let mut player_movement = Vec2::new(
@@ -45,14 +43,6 @@ pub fn set_movement_actions(
         && let Ok((camera, camera_transform)) = camera.single()
         && let Ok(touch_position) = camera.viewport_to_world_2d(camera_transform, touch_position)
     {
-        let diff = touch_position
-            - player
-                .single()
-                .map(|transform| transform.translation.xy())
-                .unwrap_or(touch_position);
-        if diff.length() > FOLLOW_EPSILON {
-            player_movement = diff.normalize();
-        }
     }
 
     if player_movement != Vec2::ZERO {
