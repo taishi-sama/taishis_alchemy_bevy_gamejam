@@ -3,8 +3,8 @@ mod audio;
 mod collision;
 mod finish_areas;
 mod game_object;
-mod player;
 pub mod main_building;
+mod player;
 
 use bevy::prelude::*;
 

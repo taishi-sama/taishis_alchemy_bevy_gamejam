@@ -2,21 +2,15 @@ use bevy::prelude::*;
 
 use crate::GameState;
 
-
 pub struct BuildingPlugin;
 
 impl Plugin for BuildingPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(
-            OnEnter(GameState::Playing),
-            spawn_main_building,
-        );
+        app.add_systems(OnEnter(GameState::Playing), spawn_main_building);
     }
 }
 #[derive(Debug, Component, Clone, Default)]
 pub struct MainBuilding;
-
-
 
 pub fn main_building() -> impl Scene {
     bsn! {
