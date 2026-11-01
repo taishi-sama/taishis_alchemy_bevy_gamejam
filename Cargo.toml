@@ -35,7 +35,9 @@ strip = false
 
 [features]
 dev = [
+    "bevy/bevy_remote",
     "bevy/dynamic_linking",
+    "bevy/debug"
 ]
 
 # Bevy's default features are `2d`, `3d`, `ui` and `audio`. We take all of them except for `audio`, since it clashes with bevy_kira_audio.
@@ -44,9 +46,7 @@ dev = [
 bevy = { version = "0.20.1", default-features = false, features = [
     "2d",
     "ui",    
-    "bevy_remote",
     "picking",
-    "debug",
 ] }
 bevy_kira_audio = { version = "0.27.1" }
 bevy_asset_loader = { version = "0.28.1" }
