@@ -1,5 +1,6 @@
 [build]
 public_url = "./"
+cargo_profile = "wasm-dist"
 
 [serve]
 port = 8080

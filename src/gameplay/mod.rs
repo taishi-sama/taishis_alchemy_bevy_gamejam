@@ -4,6 +4,7 @@ mod collision;
 mod finish_areas;
 mod game_object;
 mod player;
+pub mod main_building;
 
 use bevy::prelude::*;
 
@@ -12,6 +13,8 @@ use audio::InternalAudioPlugin;
 use finish_areas::FinishAreaPlugin;
 use game_object::GameObjectPlugin;
 use player::PlayerPlugin;
+
+use crate::gameplay::main_building::BuildingPlugin;
 
 pub struct GameplayPlugin;
 
@@ -23,6 +26,7 @@ impl Plugin for GameplayPlugin {
             FinishAreaPlugin,
             GameObjectPlugin,
             PlayerPlugin,
+            BuildingPlugin,
         ));
     }
 }
