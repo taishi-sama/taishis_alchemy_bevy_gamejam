@@ -20,7 +20,8 @@ impl Plugin for EnemyPlugin {
             Update,
             spawn_zombies_around
                 .run_if(in_state(GameState::Playing))
-                .run_if(on_timer(Duration::from_secs(1))),
+                .run_if(on_timer(Duration::from_secs(1)))
+                .run_if(|| false),
         );
     }
 }

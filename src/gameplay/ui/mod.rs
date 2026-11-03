@@ -1,14 +1,8 @@
+pub mod curved_line;
+pub mod edit_pane;
 pub mod ui_state;
-
-use bevy::{
-    color::palettes::css::{BLACK, RED, WHITE},
-    picking::hover::Hovered,
-    prelude::*,
-    text::FontSourceTemplate,
-    ui::Pressed,
-    ui_widgets::{self, Activate},
-};
-
+use crate::gameplay::ui::curved_line::{curved_line, curved_line_plugin};
+use crate::gameplay::ui::edit_pane::{Header, MovableWindow, edit_pane_plugin, movable_window};
 use crate::{
     GameState,
     gameplay::{
@@ -17,8 +11,16 @@ use crate::{
         game_object::GameObject,
     },
 };
+use bevy::{
+    color::palettes::css::{self, BLACK, RED, WHITE},
+    picking::hover::Hovered,
+    prelude::*,
+    ui::Pressed,
+    ui_widgets::{self, Activate},
+};
 
 pub fn ui_system(app: &mut App) {
+    app.add_plugins((curved_line_plugin, edit_pane_plugin));
     app.add_systems(OnEnter(GameState::Playing), game_ui.spawn());
     app.add_systems(
         Update,
@@ -28,6 +30,7 @@ pub fn ui_system(app: &mut App) {
 
 pub fn game_ui() -> impl Scene {
     bsn! {
+        #UISurface
         GameObject
         Node {
             width: percent(100),
@@ -36,13 +39,17 @@ pub fn game_ui() -> impl Scene {
         }
         Children [
             @dock()
+            --
+            @movable_window()
         ]
         Pickable::IGNORE
+
     }
 }
 
 pub fn dock() -> impl Scene {
     bsn! {
+        #DOCK
         Node {
             position_type: PositionType::Absolute,
             bottom: px(10.0),
@@ -52,14 +59,20 @@ pub fn dock() -> impl Scene {
             right: percent(10),
             border_radius: BorderRadius::px(20.0, 20.0, 20.0, 20.0)
             justify_self: JustifySelf::Center,
-            border: UiRect::all(px(1.0)),
+            // border: UiRect::all(px(1.0)),
             padding: UiRect::px(10.0, 10.0, 1.0, 1.0),
             column_gap: px(20.0)
             flex_direction: FlexDirection::Row,
             align_items: AlignItems::Center,
             justify_content: JustifyContent::Center,
         }
-        BoxShadow{}
+        BoxShadow::new(
+            Srgba::BLACK.with_alpha(0.4).into(),
+            px(0),
+            px(0),
+            px(1),
+            px(4),
+        )
         BackgroundColor(Color::srgba_u8(60, 60, 60, 100))
         BorderColor::from(Color::BLACK)
         Children [
@@ -85,8 +98,13 @@ pub fn dock() -> impl Scene {
 const NORMAL_BUTTON: Color = Color::srgb(0.15, 0.15, 0.15);
 const HOVERED_BUTTON: Color = Color::srgb(0.25, 0.25, 0.25);
 const PRESSED_BUTTON: Color = Color::srgb(0.35, 0.75, 0.35);
+
+#[derive(Debug, Component, Default, Clone, Reflect)]
+pub struct SpawnDockButton;
+
 fn button(label: &str) -> impl Scene {
     bsn! {
+        SpawnDockButton
         ui_widgets::Button
         Node {
             height: percent(100),
@@ -122,10 +140,10 @@ fn update_button_appearance(
             &mut BorderColor,
             &Children,
         ),
-        With<ui_widgets::Button>,
+        (With<ui_widgets::Button>, With<SpawnDockButton>),
     >,
 ) {
-    for (hovered, pressed, mut color, mut border_color, children) in &mut buttons {
+    for (hovered, pressed, mut color, mut border_color, _children) in &mut buttons {
         match (hovered.get(), pressed) {
             // Pressed (and, since you can only press what you're hovering, also hovered).
             (_, true) => {

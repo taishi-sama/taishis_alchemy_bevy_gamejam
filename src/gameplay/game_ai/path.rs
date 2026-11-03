@@ -36,7 +36,7 @@ pub fn update_path_on_change(
 }
 
 #[derive(Debug, Clone, Component, Default)]
-struct PathingTo {
+pub struct PathingTo {
     pub time_to_update: i32,
     pub radius_of_detection_intermedian: f32,
     pub radius_of_detection_final: f32,

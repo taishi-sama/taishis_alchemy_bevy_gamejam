@@ -1,12 +1,12 @@
 // disable console on windows for release builds
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use bevy::DefaultPlugins;
 use bevy::asset::AssetMetaCheck;
 use bevy::ecs::system::NonSendMarker;
 use bevy::prelude::*;
 use bevy::window::PrimaryWindow;
 use bevy::winit::WINIT_WINDOWS;
+use bevy::{DefaultPlugins, feathers::FeathersPlugins};
 use bevy_game::GamePlugin;
 use bevy_inspector_egui::{bevy_egui::EguiPlugin, quick::WorldInspectorPlugin};
 use std::io::Cursor;
@@ -38,6 +38,7 @@ fn main() {
         .add_systems(Startup, set_window_icon)
         .add_plugins(EguiPlugin::default())
         .add_plugins(WorldInspectorPlugin::new())
+        .add_plugins(FeathersPlugins)
         .run();
 }
 
