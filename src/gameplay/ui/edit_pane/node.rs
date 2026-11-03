@@ -2,9 +2,6 @@ use bevy::{color::palettes::css, ecs::template::EntityTemplate, prelude::*, ui_w
 
 use crate::gameplay::ui::edit_pane::{CloseButton, Header, MovableWindow, close_button};
 
-
-
-
 pub fn movable_node(scene: Box<dyn Scene>) -> impl Scene {
     bsn! {
         #MovableNode

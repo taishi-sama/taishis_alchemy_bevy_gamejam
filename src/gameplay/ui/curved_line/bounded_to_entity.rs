@@ -1,4 +1,7 @@
-use bevy::{ecs::{relationship::Relationship, template::EntityTemplate}, prelude::*};
+use bevy::{
+    ecs::{relationship::Relationship, template::EntityTemplate},
+    prelude::*,
+};
 
 use crate::gameplay::ui::curved_line::{CurvedLineParams, curved_line};
 
@@ -25,11 +28,18 @@ pub struct BoundedToEntities {
 }
 
 pub fn bounded_to_entities_beginning(
-    q: Query<(&UiGlobalTransform, &FollowedAsBeginning), Or<(Changed<UiGlobalTransform>, Changed<FollowedAsBeginning>)>>,
-    mut q_curved: Query<(&BoundedToEntities, &mut CurvedLineParams, &UiGlobalTransform)>,
+    q: Query<
+        (&UiGlobalTransform, &FollowedAsBeginning),
+        Or<(Changed<UiGlobalTransform>, Changed<FollowedAsBeginning>)>,
+    >,
+    mut q_curved: Query<(
+        &BoundedToEntities,
+        &mut CurvedLineParams,
+        &UiGlobalTransform,
+    )>,
 ) {
     for (ugt, fabi) in q.iter() {
-        for i in fabi.iter(){
+        for i in fabi.iter() {
             if let Ok((bte, mut curve, ugt_c)) = q_curved.get_mut(i) {
                 curve.point1 = ugt.translation - ugt_c.translation;
                 curve.point2 = curve.point1 + bte.offset1;
@@ -41,8 +51,15 @@ pub fn bounded_to_entities_beginning(
 }
 
 pub fn bounded_to_entities_ending(
-    q: Query<(&UiGlobalTransform, &FollowedAsEnding), Or<(Changed<UiGlobalTransform>, Changed<FollowedAsEnding>)>>,
-    mut q_curved: Query<(&BoundedToEntities, &mut CurvedLineParams, &UiGlobalTransform)>,
+    q: Query<
+        (&UiGlobalTransform, &FollowedAsEnding),
+        Or<(Changed<UiGlobalTransform>, Changed<FollowedAsEnding>)>,
+    >,
+    mut q_curved: Query<(
+        &BoundedToEntities,
+        &mut CurvedLineParams,
+        &UiGlobalTransform,
+    )>,
 ) {
     for (ugt, faei) in q.iter() {
         for i in faei.iter() {
@@ -64,7 +81,10 @@ pub fn bounded_to_entities(beginning: EntityTemplate, ending: EntityTemplate) ->
         BoundedToEntities
     }
 }
-pub fn bounded_to_entities_with_offset(beginning: EntityTemplate, ending: EntityTemplate) -> impl Scene {
+pub fn bounded_to_entities_with_offset(
+    beginning: EntityTemplate,
+    ending: EntityTemplate,
+) -> impl Scene {
     bsn! {
         @bounded_to_entities(beginning, ending)
         BoundedToEntities {

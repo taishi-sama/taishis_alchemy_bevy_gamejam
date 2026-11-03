@@ -1,10 +1,20 @@
 pub mod node;
 
 use bevy::{
-    color::palettes::css, ecs::template::EntityTemplate, picking::hover::Hovered, prelude::*, ui_widgets::{self, Activate},
+    color::palettes::css,
+    ecs::template::EntityTemplate,
+    picking::hover::Hovered,
+    prelude::*,
+    ui_widgets::{self, Activate},
 };
 
-use crate::gameplay::ui::{curved_line::{bounded_to_entity::{bounded_to_entities, bounded_to_entities_with_offset}, curved_line}, edit_pane::node::movable_node};
+use crate::gameplay::ui::{
+    curved_line::{
+        bounded_to_entity::{bounded_to_entities, bounded_to_entities_with_offset},
+        curved_line,
+    },
+    edit_pane::node::movable_node,
+};
 
 pub fn edit_pane_plugin(app: &mut App) {
     app.add_systems(Update, synchronize);
@@ -147,7 +157,7 @@ pub fn movable_window() -> impl Scene {
         @MovableWindow {
             size: vec2(400.0, 300.0)
         }
-        
+
         BackgroundColor(css::GREY)
         Node{
             border_radius: BorderRadius::all(px(10))
@@ -198,7 +208,7 @@ pub fn movable_window() -> impl Scene {
                 @movable_node({
                     Box::new(bsn! {
                         BackgroundColor(css::RED)
-                        
+
                     })
                 })
                 @MovableWindow{position: vec2(10.0, 10.0)}
@@ -222,4 +232,3 @@ pub fn movable_window() -> impl Scene {
         ]
     }
 }
-

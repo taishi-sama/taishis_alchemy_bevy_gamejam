@@ -2,11 +2,21 @@ pub mod bounded_to_entity;
 
 use bevy::{color::palettes::css, prelude::*, render::render_resource::AsBindGroup};
 
-use crate::gameplay::ui::curved_line::bounded_to_entity::{bounded_to_entities_beginning, bounded_to_entities_ending};
+use crate::gameplay::ui::curved_line::bounded_to_entity::{
+    bounded_to_entities_beginning, bounded_to_entities_ending,
+};
 
 pub fn curved_line_plugin(app: &mut App) {
     app.add_plugins(UiMaterialPlugin::<CurvedLineMaterial>::default());
-    app.add_systems(Update, (bounded_to_entities_beginning, bounded_to_entities_ending, synchronyze).chain());
+    app.add_systems(
+        Update,
+        (
+            bounded_to_entities_beginning,
+            bounded_to_entities_ending,
+            synchronyze,
+        )
+            .chain(),
+    );
 }
 #[derive(Debug, Component, Default, Clone, Reflect)]
 pub struct CurvedLineParams {
