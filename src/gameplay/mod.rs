@@ -11,6 +11,7 @@ pub mod generic_stats;
 pub mod projectiles;
 pub mod ui;
 pub mod utility;
+pub mod game_mechanics;
 
 use avian2d::{PhysicsPlugins, collision::collider::Collider, dynamics::integrator::Gravity};
 use bevy::prelude::*;
@@ -21,6 +22,7 @@ use game_object::GameObjectPlugin;
 use vleue_navigator::{VleueNavigatorPlugin, prelude::NavmeshUpdaterPlugin};
 
 use crate::gameplay::building_preview::building_preview;
+use crate::gameplay::game_mechanics::game_mechanics_plugin;
 use crate::gameplay::generic_stats::generic_stats_plugin;
 use crate::gameplay::projectiles::projectiles_plugin;
 use crate::gameplay::{
@@ -46,6 +48,7 @@ impl Plugin for GameplayPlugin {
             building_preview,
             generic_stats_plugin,
             projectiles_plugin,
+            game_mechanics_plugin,
         ));
         app.insert_resource(Gravity::ZERO);
         app.add_plugins((

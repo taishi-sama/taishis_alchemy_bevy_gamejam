@@ -1,4 +1,5 @@
 pub mod node;
+pub mod stat_node_edit_panel;
 
 use bevy::{
     color::palettes::css,

@@ -1,4 +1,4 @@
-use bevy::{color::palettes::css, ecs::template::EntityTemplate, prelude::*, ui_widgets::Activate};
+use bevy::{color::palettes::css, ecs::template::EntityTemplate, prelude::*, scene::Ready, ui_widgets::Activate};
 
 use crate::gameplay::ui::edit_pane::{CloseButton, Header, MovableWindow, close_button};
 
@@ -44,8 +44,54 @@ pub fn movable_node(scene: Box<dyn Scene>) -> impl Scene {
                 width: percent(100),
                 height: percent(100),
             }
-            Children[
                 @scene
+            --
+            #LeftPanel
+            Node {
+                position_type: PositionType::Absolute,
+                flex_direction: FlexDirection::Column,
+                justify_content: JustifyContent::SpaceEvenly,
+                width: percent(0),
+                height: percent(100),
+                left: px(-10),
+                top: px(0)
+            }
+            Children[
+                Node{
+                    width: px(10),
+                    height: px(10),
+                }
+                BackgroundColor(css::YELLOW)
+                --
+                Node{
+                    width: px(10),
+                    height: px(10),
+                }
+                BackgroundColor(css::YELLOW)
+            ]
+            --
+            #RightPanel
+            Node {
+                position_type: PositionType::Absolute,
+                flex_direction: FlexDirection::Column,
+                justify_content: JustifyContent::SpaceEvenly,
+                width: percent(0),
+                height: percent(100),
+                right: px(0),
+                top: px(0)
+            }
+            Children[
+                Node{
+                    width: px(10),
+                    height: px(10),
+                }
+                BackgroundColor(css::YELLOW)
+                --
+                Node{
+                    width: px(10),
+                    height: px(10),
+                }
+                BackgroundColor(css::YELLOW)
             ]
         ]
     }
