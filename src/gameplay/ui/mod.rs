@@ -43,8 +43,6 @@ pub fn game_ui() -> impl Scene {
         }
         Children [
             @dock()
-            --
-            @movable_window()
         ]
         Pickable::IGNORE
 

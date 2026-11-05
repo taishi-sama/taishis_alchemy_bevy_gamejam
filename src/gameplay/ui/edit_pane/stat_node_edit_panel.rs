@@ -20,6 +20,16 @@ pub struct Represents(pub Entity);
 #[reflect(Component)]
 pub struct RepresentedBy(Vec<Entity>);
 
+#[derive(Debug, Component, FromTemplate, Reflect)]
+#[relationship(relationship_target=ChildrenPorts)]
+#[reflect(Component)]
+pub struct ParentWindow(pub Entity);
+#[derive(Debug, Component, FromTemplate, Reflect)]
+#[relationship_target(relationship=ParentWindow)]
+#[reflect(Component)]
+pub struct ChildrenPorts(Vec<Entity>);
+
+
 pub fn spawn_edit_panel_from(
     tower: Entity,
     q_tower: Query<&NodeContainer>,
@@ -27,31 +37,31 @@ pub fn spawn_edit_panel_from(
     q_input: Query<&InputMarker>,
     q_output: Query<&OutputMarker>,
 ) -> impl Scene {
-    let Ok(node_container) = q_tower.get(tower) else {
-        error!("{} have no NodeContainer component", tower);
-        return Box::new(bsn! {}) as Box<dyn Scene>;
-    };
     let mut statnodes: Vec<Box<dyn Scene>> = vec![];
-    for (i, ent) in node_container.iter().enumerate() {
-        let x = i as f32 * 80.0 + 20.0;
-        let y = if i % 2 == 0 { 50.0 } else { 150.0 };
-        if let Ok(sn) = q_statnodes.get(ent) {
-            statnodes.push(Box::new(bsn! {
-                @spawn_node(ent, q_statnodes, q_input, q_output)
-                @MovableWindow {
-                    size: vec2(50.0, 40.0),
-                    position: vec2(x, y),
-                }
-            }));
+    if let Ok(node_container) = q_tower.get(tower) {
+        for (i, ent) in node_container.iter().enumerate() {
+            let x = i as f32 * 80.0 + 20.0;
+            let y = if i % 2 == 0 { 50.0 } else { 80.0 };
+            if let Ok(sn) = q_statnodes.get(ent) {
+                statnodes.push(Box::new(bsn! {
+                    @spawn_node(ent, q_statnodes, q_input, q_output)
+                    @MovableWindow {
+                        size: vec2(50.0, 40.0),
+                        position: vec2(x, y),
+                    }
+                }));
+            }
         }
-    }
-    return Box::new(bsn! {
+    } else {
+        error!("{} have no NodeContainer component", tower);
+    };
+    bsn! {
         #MovableWindowRef
         @MovableWindow {
             position: vec2(100.0, 400.0),
             size: vec2(400.0, 300.0)
         }
-
+        Represents(tower)
         BackgroundColor(css::GREY)
         Node{
             border_radius: BorderRadius::all(px(10))
@@ -97,7 +107,7 @@ pub fn spawn_edit_panel_from(
             on(on_ready_spawn_edit_panel)
         ]
 
-    }) as Box<dyn Scene>;
+    }
 }
 
 pub fn on_ready_spawn_edit_panel(
@@ -106,11 +116,15 @@ pub fn on_ready_spawn_edit_panel(
     q_rep: Query<&Represents>,
     q_represented: Query<&RepresentedBy>,
     q_input: Query<&Input>,
+    q_is_output_or_input: Query<(), Or<(With<InputMarker>,With<OutputMarker>)> >,
     mut commands: Commands,
 ) {
     let mut pairs = vec![];
     for i in q_ch.iter_descendants(on.entity) {
         if let Ok(rep) = q_rep.get(i) {
+            if q_is_output_or_input.contains(rep.0) {
+                commands.entity(i).insert(ParentWindow(on.entity));
+            }
             if let Ok(inp) = q_input.get(rep.0) {
                 if let Ok(outp) = q_represented.get(inp.0) {
                     for o in outp.iter() {
@@ -125,6 +139,38 @@ pub fn on_ready_spawn_edit_panel(
         commands.spawn_scene(bsn! {
             ChildOf({on.entity})
             @bounded_to_entities_with_offset(i.into(), o.into())
+        });
+    }
+}
+
+pub fn on_dragdrop_io(
+    on: On<PointerDragDrop>,
+    q_parent_window: Query<&ParentWindow>,
+    q_rep: Query<(Entity, &Represents)>,
+    q_input: Query<&InputMarker>,
+    q_output: Query<&OutputMarker>,
+    mut commands: Commands,
+) {
+    if on.dropped == on.entity {warn!("dropped == entity, returning"); return;}
+    let Ok(pws) = q_parent_window.get_many([on.dropped, on.entity]) else {warn!("No ParentWindow, returning");  return;};
+    if pws[0].0 != pws[1].0 {return;}
+    if let Ok(reps) = q_rep.get_many([on.dropped, on.entity]) {
+        let mut input: Option<Entity> = None;
+        let mut output: Option<Entity> = None;
+        for (ent, rep) in &reps{
+            if let Ok(inp) = q_input.get(rep.0) {
+                input = Some(*ent)
+            }
+            if let Ok(out) = q_output.get(rep.0) {
+                output = Some(*ent)
+            }
+        }
+        if input.is_none() || output.is_none() {return;}
+        let input = input.unwrap();
+        let output = output.unwrap();
+        commands.spawn_scene(bsn! {
+            ChildOf({pws[0].0})
+            @bounded_to_entities_with_offset(input.into(), output.into())
         });
     }
 }
@@ -151,6 +197,8 @@ pub fn spawn_node(
                 }
                 BackgroundColor(css::YELLOW)
                 Represents(i)
+                Pickable
+                on(on_dragdrop_io)
             }));
         }
         if let Ok(op) = q_output.get(i) {
@@ -161,6 +209,8 @@ pub fn spawn_node(
                 }
                 BackgroundColor(css::YELLOW_GREEN)
                 Represents(i)
+                Pickable
+                on(on_dragdrop_io)
             }));
         }
     }

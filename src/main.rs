@@ -13,8 +13,15 @@ use std::io::Cursor;
 use winit::window::Icon;
 
 fn main() {
-    App::new()
-        .insert_resource(ClearColor(Color::linear_rgb(0.4, 0.4, 0.4)))
+    let mut app = App::new();
+
+    #[cfg(feature = "dev")]
+    {
+        use bevy::remote::{http::RemoteHttpPlugin, RemotePlugin};
+        app.add_plugins((RemotePlugin::default(), RemoteHttpPlugin::default()));
+    }
+
+    app.insert_resource(ClearColor(Color::linear_rgb(0.4, 0.4, 0.4)))
         .add_plugins(
             DefaultPlugins
                 .set(WindowPlugin {
