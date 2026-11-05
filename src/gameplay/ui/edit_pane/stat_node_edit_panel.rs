@@ -1,6 +1,11 @@
 use bevy::{color::palettes::css, prelude::*, scene::Ready, ui_widgets::Activate};
 
-use crate::gameplay::{game_mechanics::stat_node::{IOContainer, Input, InputMarker, NodeContainer, Output, OutputMarker, StatNode}, ui::edit_pane::{CloseButton, Header, MovableWindow}};
+use crate::gameplay::{
+    game_mechanics::stat_node::{
+        IOContainer, Input, InputMarker, NodeContainer, Output, OutputMarker, StatNode,
+    },
+    ui::edit_pane::{CloseButton, Header, MovableWindow},
+};
 
 #[derive(Debug, Component, FromTemplate, Reflect)]
 #[relationship(relationship_target=RepresentedBy)]
@@ -9,7 +14,6 @@ pub struct Represents(pub Entity);
 #[derive(Debug, Component, FromTemplate, Reflect)]
 #[relationship_target(relationship=Represents, linked_spawn)]
 pub struct RepresentedBy(Entity);
-
 
 pub fn spawn_edit_panel_from(
     tower: Entity,
@@ -24,11 +28,10 @@ pub fn spawn_edit_panel_from(
     };
     let statnodes: Vec<Box<dyn Scene>> = vec![];
 
-
     return Box::new(bsn! {}) as Box<dyn Scene>;
 }
 
-pub fn on_ready_spawn_edit_panel(on: On<Ready>){}
+pub fn on_ready_spawn_edit_panel(on: On<Ready>) {}
 
 pub fn spawn_node(
     node: Entity,
@@ -44,7 +47,7 @@ pub fn spawn_node(
         #MovableNode
         Node {
             flex_direction: FlexDirection::Column,
-    
+
         }
         @MovableWindow {
             size: vec2(50.0, 40.0)

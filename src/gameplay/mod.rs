@@ -6,12 +6,12 @@ pub mod camera;
 pub mod collisions;
 pub mod enemies;
 pub mod game_ai;
+pub mod game_mechanics;
 mod game_object;
 pub mod generic_stats;
 pub mod projectiles;
 pub mod ui;
 pub mod utility;
-pub mod game_mechanics;
 
 use avian2d::{PhysicsPlugins, collision::collider::Collider, dynamics::integrator::Gravity};
 use bevy::prelude::*;

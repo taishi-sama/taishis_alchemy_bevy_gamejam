@@ -1,6 +1,5 @@
 use bevy::prelude::*;
 
-
 #[derive(Debug, Component, FromTemplate, Reflect)]
 #[relationship(relationship_target=NodeContainer)]
 pub struct ContainedStatNode(pub Entity);
@@ -9,9 +8,7 @@ pub struct ContainedStatNode(pub Entity);
 pub struct NodeContainer(Vec<Entity>);
 
 #[derive(Debug, Clone, Component, FromTemplate, Default, Reflect)]
-pub struct StatNode {
-
-}
+pub struct StatNode {}
 
 #[derive(Debug, Component, FromTemplate, Reflect)]
 #[relationship(relationship_target=IOContainer)]
@@ -25,7 +22,6 @@ pub struct InputMarker;
 #[derive(Debug, Clone, Component, FromTemplate, Default, Reflect)]
 pub struct OutputMarker;
 
-
 #[derive(Debug, Component, FromTemplate, Reflect)]
 #[relationship(relationship_target=Output)]
 #[require(InputMarker)]
@@ -35,6 +31,3 @@ pub struct Input(pub Entity);
 #[relationship_target(relationship=Input)]
 #[require(OutputMarker)]
 pub struct Output(Entity);
-
-
-

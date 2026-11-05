@@ -1,4 +1,7 @@
-use bevy::{color::palettes::css, ecs::template::EntityTemplate, prelude::*, scene::Ready, ui_widgets::Activate};
+use bevy::{
+    color::palettes::css, ecs::template::EntityTemplate, prelude::*, scene::Ready,
+    ui_widgets::Activate,
+};
 
 use crate::gameplay::ui::edit_pane::{CloseButton, Header, MovableWindow, close_button};
 
