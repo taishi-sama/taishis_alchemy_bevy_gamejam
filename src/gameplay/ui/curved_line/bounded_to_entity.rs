@@ -52,8 +52,7 @@ pub fn bounded_to_entities_beginning(
 
 pub fn bounded_to_entities_ending(
     q: Query<
-        (&UiGlobalTransform, &FollowedAsEnding)
-        // ,Or<(Changed<UiGlobalTransform>, Changed<FollowedAsEnding>)>,
+        (&UiGlobalTransform, &FollowedAsEnding), // ,Or<(Changed<UiGlobalTransform>, Changed<FollowedAsEnding>)>,
     >,
     mut q_curved: Query<(
         &BoundedToEntities,

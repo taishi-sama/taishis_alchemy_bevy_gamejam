@@ -29,7 +29,6 @@ pub struct ParentWindow(pub Entity);
 #[reflect(Component)]
 pub struct ChildrenPorts(Vec<Entity>);
 
-
 pub fn spawn_edit_panel_from(
     tower: Entity,
     q_tower: Query<&NodeContainer>,
@@ -116,7 +115,7 @@ pub fn on_ready_spawn_edit_panel(
     q_rep: Query<&Represents>,
     q_represented: Query<&RepresentedBy>,
     q_input: Query<&Input>,
-    q_is_output_or_input: Query<(), Or<(With<InputMarker>,With<OutputMarker>)> >,
+    q_is_output_or_input: Query<(), Or<(With<InputMarker>, With<OutputMarker>)>>,
     mut commands: Commands,
 ) {
     let mut pairs = vec![];
@@ -129,9 +128,8 @@ pub fn on_ready_spawn_edit_panel(
                 if let Ok(outp) = q_represented.get(inp.0) {
                     for o in outp.iter() {
                         pairs.push((i, o))
-
                     }
-                } 
+                }
             }
         }
     }
@@ -151,13 +149,21 @@ pub fn on_dragdrop_io(
     q_output: Query<&OutputMarker>,
     mut commands: Commands,
 ) {
-    if on.dropped == on.entity {warn!("dropped == entity, returning"); return;}
-    let Ok(pws) = q_parent_window.get_many([on.dropped, on.entity]) else {warn!("No ParentWindow, returning");  return;};
-    if pws[0].0 != pws[1].0 {return;}
+    if on.dropped == on.entity {
+        warn!("dropped == entity, returning");
+        return;
+    }
+    let Ok(pws) = q_parent_window.get_many([on.dropped, on.entity]) else {
+        warn!("No ParentWindow, returning");
+        return;
+    };
+    if pws[0].0 != pws[1].0 {
+        return;
+    }
     if let Ok(reps) = q_rep.get_many([on.dropped, on.entity]) {
         let mut input: Option<Entity> = None;
         let mut output: Option<Entity> = None;
-        for (ent, rep) in &reps{
+        for (ent, rep) in &reps {
             if let Ok(inp) = q_input.get(rep.0) {
                 input = Some(*ent)
             }
@@ -165,7 +171,9 @@ pub fn on_dragdrop_io(
                 output = Some(*ent)
             }
         }
-        if input.is_none() || output.is_none() {return;}
+        if input.is_none() || output.is_none() {
+            return;
+        }
         let input = input.unwrap();
         let output = output.unwrap();
         commands.spawn_scene(bsn! {

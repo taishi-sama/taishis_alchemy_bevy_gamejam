@@ -17,7 +17,7 @@ fn main() {
 
     #[cfg(feature = "dev")]
     {
-        use bevy::remote::{http::RemoteHttpPlugin, RemotePlugin};
+        use bevy::remote::{RemotePlugin, http::RemoteHttpPlugin};
         app.add_plugins((RemotePlugin::default(), RemoteHttpPlugin::default()));
     }
 
