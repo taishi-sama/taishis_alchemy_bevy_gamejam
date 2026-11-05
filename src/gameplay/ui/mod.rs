@@ -28,9 +28,13 @@ pub fn ui_system(app: &mut App) {
     );
 }
 
+#[derive(Debug, Clone, Default, Reflect, Component)]
+pub struct UISurface;
+
 pub fn game_ui() -> impl Scene {
     bsn! {
         #UISurface
+        UISurface
         GameObject
         Node {
             width: percent(100),
